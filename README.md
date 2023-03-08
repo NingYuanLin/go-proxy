@@ -26,3 +26,9 @@ socks5-cmd start
 ```
 go get https://github.com/NingYuanLin/go-proxy.git@latest
 ```
+### Thanks
+* https://www.rfc-editor.org/rfc/rfc1928
+* https://www.rfc-editor.org/rfc/rfc1929
+* https://github.com/txthinking/socks5
+* https://github.com/jqqjj/socks5
+* https://github.com/0990/socks5
