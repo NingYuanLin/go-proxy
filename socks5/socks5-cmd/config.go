@@ -13,7 +13,7 @@ import (
 )
 
 var configCmd = &cobra.Command{
-	Use: "config",
+	Use:   "config",
 	Short: "The operations about config file",
 	Run: func(cmd *cobra.Command, args []string) {
 		if create, _ := cmd.Flags().GetBool("create"); create == true {
@@ -301,10 +301,10 @@ func parseConfigFromFile() (*ConfigFileStruct, error) {
 	configFileStruct.timeout = viper.GetInt64("timeout")
 	configFileStruct.udp_conn_lifetime = viper.GetInt64("udp_conn_lifetime")
 
-	err = viper.Unmarshal(configFileStruct)
-	if err != nil {
-		return nil, err
-	}
+	//err = viper.Unmarshal(configFileStruct)
+	//if err != nil {
+	//	return nil, err
+	//}
 
 	return configFileStruct, nil
 }
