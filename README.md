@@ -1,5 +1,5 @@
 # Go-proxy
-Standard and lightweight proxy implementation with golang.
+Standard and lightweight proxy implementations with golang.
 * Socks5
 ## Socks5-server
 SOCKS Protocol Version 5 Library.
