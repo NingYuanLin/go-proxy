@@ -107,17 +107,21 @@ func NewUdpRelayServer(server *Socks5Server, conn *net.UDPConn, tcpConn *net.TCP
 }
 
 func (u *UdpRelayServer) Close() error {
-	err := u.Conn.Close()
-
-	if u.TcpConn != nil {
-		err = u.TcpConn.Close()
-	}
-
+	// step1. close the connection to the destination
 	u.UdpExchangesMutex.Lock()
 	for _, udpExchange := range u.UdpExchanges {
 		udpExchange.Close()
 	}
 	u.UdpExchangesMutex.Unlock()
+
+	// step2. close the udp connection to the client
+	err := u.Conn.Close()
+
+	// step3. close the tcp connection to the client
+	if u.TcpConn != nil {
+		err = u.TcpConn.Close()
+	}
+
 	return err
 }
 
