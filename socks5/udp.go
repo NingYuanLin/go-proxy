@@ -19,7 +19,8 @@ type UdpExchange struct {
 	DConn          *net.UDPConn // connection with destination
 	UdpRelayServer *UdpRelayServer
 	ClientAddr     *net.UDPAddr
-	Closed         chan struct{}
+	Closed         chan struct{} // prepare for closing
+	ClosedOk       chan struct{} // have closed
 }
 
 func NewUdpExchange(conn *net.UDPConn, lifetime time.Duration, udpRelayServer *UdpRelayServer, clientAddr *net.UDPAddr) *UdpExchange {
@@ -28,6 +29,8 @@ func NewUdpExchange(conn *net.UDPConn, lifetime time.Duration, udpRelayServer *U
 	udpExchange.DConn = conn
 	udpExchange.UdpRelayServer = udpRelayServer
 	udpExchange.ClientAddr = clientAddr
+	udpExchange.Closed = make(chan struct{})
+	udpExchange.ClosedOk = make(chan struct{})
 	return udpExchange
 }
 
@@ -44,6 +47,7 @@ func (u *UdpExchange) Refresh(lifetime time.Duration) {
 
 func (u *UdpExchange) Close() {
 	u.Closed <- struct{}{}
+	<-u.ClosedOk // waiting for all work to be completed
 }
 
 func (u *UdpExchange) Handle() error {
@@ -55,6 +59,7 @@ func (u *UdpExchange) Handle() error {
 	for {
 		select {
 		case <-u.Closed:
+			u.ClosedOk <- struct{}{}
 			return nil
 		default:
 			err := u.DConn.SetReadDeadline(time.Now().Add(time.Second * 3))
